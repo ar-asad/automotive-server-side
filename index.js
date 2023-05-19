@@ -41,7 +41,7 @@ async function run() {
             const id = req.params.id;
             const query = { _id: ObjectId(id) }
             const car = await toyCarCollection.findOne(query);
-            res.send(car)
+            res.send(car);
         })
 
 
