@@ -1,4 +1,4 @@
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const express = require("express");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
@@ -35,6 +35,13 @@ async function run() {
             const query = {}
             const results = await toyCarCollection.find(query).toArray();
             res.send(results);
+        });
+
+        app.get('/cars/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) }
+            const car = await toyCarCollection.findOne(query);
+            res.send(car)
         })
 
 
