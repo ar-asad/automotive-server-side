@@ -31,7 +31,11 @@ async function run() {
         await client.connect();
         const toyCarCollection = client.db("toycar").collection("cars");
 
-
+        app.get('/cars', async (req, res) => {
+            const query = {}
+            const results = await toyCarCollection.find(query).toArray();
+            res.send(results);
+        })
 
 
     } finally {
