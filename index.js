@@ -43,6 +43,11 @@ async function run() {
             const car = await toyCarCollection.findOne(query);
             res.send(car);
         })
+        app.post('/cars', async (req, res) => {
+            const addcar = req.body;
+            const result = await toyCarCollection.insertOne(addcar)
+            res.send(result);
+        })
 
 
     } finally {
