@@ -40,7 +40,7 @@ async function run() {
                 }
             }
 
-            const results = await toyCarCollection.find(query).toArray();
+            const results = await toyCarCollection.find(query).limit(20).toArray();
             res.send(results);
         });
 
@@ -64,23 +64,26 @@ async function run() {
             res.send(result);
         });
 
-        app.put('/cars/id', async (req, res) => {
-            const updateInfo = req.body;
+        app.put('/cars/:id', async (req, res) => {
+            const updateCarInfo = req.body;
             const id = req.params.id;
             const filter = { _id: ObjectId(id) }
-            console.log(updateCarInfo, filter)
-            // const options = { upsert: true };
-            // const updatedDoc = {
-            //     $set: {
-            //         paid: true,
-            //         transactionId: payment.transactionId
-            //     }
-            // }
+            console.log(updateCarInfo, id)
+            const options = { upsert: true };
+            const updatedDoc = {
+                $set: {
+                    price: updateCarInfo.price,
+                    available_quantity: updateCarInfo.available_quantity,
+                    description: updateCarInfo.description
+                }
+            }
+            const result = await toyCarCollection.updateOne(filter, updatedDoc);
+            res.send(result);
+
         });
 
         app.delete('/cars/:id', async (req, res) => {
             const id = req.params.id;
-            console.log(id)
             const filter = { _id: ObjectId(id) };
             const result = await toyCarCollection.deleteOne(filter);
             res.send(result);
