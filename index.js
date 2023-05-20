@@ -32,7 +32,14 @@ async function run() {
         const toyCarCollection = client.db("toycar").collection("cars");
 
         app.get('/cars', async (req, res) => {
-            const query = {}
+            const searchQuery = req.query.search;
+            let query = {};
+            if (searchQuery) {
+                query = {
+                    toy_name: { $regex: new RegExp(searchQuery) },
+                }
+            }
+
             const results = await toyCarCollection.find(query).toArray();
             res.send(results);
         });
@@ -42,10 +49,40 @@ async function run() {
             const query = { _id: ObjectId(id) }
             const car = await toyCarCollection.findOne(query);
             res.send(car);
+        });
+
+        app.get('/mytoy', async (req, res) => {
+            const email = req.query.email;
+            const query = { seller_email: email }
+            const user = await toyCarCollection.find(query).toArray();
+            res.send(user)
         })
+
         app.post('/cars', async (req, res) => {
             const addcar = req.body;
             const result = await toyCarCollection.insertOne(addcar)
+            res.send(result);
+        });
+
+        app.put('/cars/id', async (req, res) => {
+            const updateInfo = req.body;
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) }
+            console.log(updateCarInfo, filter)
+            // const options = { upsert: true };
+            // const updatedDoc = {
+            //     $set: {
+            //         paid: true,
+            //         transactionId: payment.transactionId
+            //     }
+            // }
+        });
+
+        app.delete('/cars/:id', async (req, res) => {
+            const id = req.params.id;
+            console.log(id)
+            const filter = { _id: ObjectId(id) };
+            const result = await toyCarCollection.deleteOne(filter);
             res.send(result);
         })
 
