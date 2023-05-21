@@ -44,6 +44,16 @@ async function run() {
             res.send(results);
         });
 
+        app.get('/cars/category', async (req, res) => {
+            const category = req.query.category;
+            let query;
+            if (category) {
+                query = { sub_category: category }
+            }
+            const result = await toyCarCollection.find(query).limit(3).toArray();
+            res.send(result);
+        })
+
         app.get('/cars/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) }
@@ -54,7 +64,7 @@ async function run() {
         app.get('/mytoy', async (req, res) => {
             const email = req.query.email;
             const query = { seller_email: email }
-            const user = await toyCarCollection.find(query).toArray();
+            const user = await toyCarCollection.find(query).sort({ "price": 1, "_id": 1 }).toArray();
             res.send(user)
         })
 
@@ -68,7 +78,6 @@ async function run() {
             const updateCarInfo = req.body;
             const id = req.params.id;
             const filter = { _id: ObjectId(id) }
-            console.log(updateCarInfo, id)
             const options = { upsert: true };
             const updatedDoc = {
                 $set: {
