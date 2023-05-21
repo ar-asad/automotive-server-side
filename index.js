@@ -28,7 +28,7 @@ const client = new MongoClient(uri, {
 
 async function run() {
     try {
-        client.connect();
+        await client.connect();
         const toyCarCollection = client.db("toycar").collection("cars");
 
         app.get('/cars', async (req, res) => {
